@@ -17,7 +17,8 @@
         "fakerphp/faker": "^1.23",
         "laravel/pint": "^1.13",
         "mockery/mockery": "^1.6",
-        "phpunit/phpunit": "^11.5.3"
+        "phpunit/phpunit": "^11.5.3",
+        "squizlabs/php_codesniffer": "^3.13"
     },
     "autoload": {
         "psr-4": {
@@ -44,7 +45,16 @@
         ],
         "test": [
             "@php artisan config:clear --ansi",
-            "@php artisan test"
+            "./vendor/bin/phpunit"
+        ],
+        "phpcs": [
+            "./vendor/bin/phpcs"
+        ],
+        "phpcs:fix": [
+            "./vendor/bin/phpcbf"
+        ],
+        "phpcs:check": [
+            "./vendor/bin/phpcs --report=summary"
         ]
     },
     "extra": {

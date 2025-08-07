@@ -69,7 +69,7 @@ class DatabaseSeeder extends Seeder
                         'amount' => $accountData['initial_balance'],
                         'type' => 'deposit',
                         'status' => 'completed',
-                        'reference_id' => 'SEED_'.Str::upper(Str::random(8)),
+                        'reference_id' => 'SEED_' . Str::upper(Str::random(8)),
                     ]);
 
                     $accountData['account']->update([

@@ -22,5 +22,4 @@ class UserFactory extends Factory
             'age' => fake()->numberBetween(18, 80),
         ];
     }
-
 }
