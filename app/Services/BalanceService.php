@@ -2,18 +2,34 @@
 
 namespace App\Services;
 
+use App\Exceptions\AccountNotFoundException;
 use App\Models\Account;
 
 class BalanceService
 {
+    /**
+     * @throws AccountNotFoundException
+     */
     public function getBalance(string $accountId): Account
     {
-        return Account::findOrFail($accountId);
+        $account = Account::find($accountId);
+        if (! $account) {
+            throw new AccountNotFoundException("Account with ID {$accountId} not found");
+        }
+
+        return $account;
     }
 
+    /**
+     * @throws AccountNotFoundException
+     */
     public function getAccountTransactions(string $accountId): \Illuminate\Database\Eloquent\Collection
     {
-        $account = Account::findOrFail($accountId);
+        /** @var Account $account */
+        $account = Account::find($accountId);
+        if (! $account) {
+            throw new AccountNotFoundException("Account with ID {$accountId} not found");
+        }
 
         return $account->transactions()
             ->orderBy('created_at', 'desc')

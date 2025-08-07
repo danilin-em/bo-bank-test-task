@@ -2,9 +2,26 @@
 
 namespace App\Models;
 
+use App\Casts\MoneyCast;
+use App\Casts\ReferenceIdCast;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class Transaction
+ *
+ * Represents a financial transaction between accounts.
+ *
+ * @property int $id
+ * @property int $from_account_id
+ * @property int $to_account_id
+ * @property \App\ValueObjects\Money $amount
+ * @property string $type
+ * @property string $status
+ * @property \App\ValueObjects\ReferenceId $reference_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ */
 class Transaction extends Model
 {
     use HasFactory;
@@ -31,7 +48,8 @@ class Transaction extends Model
     protected function casts(): array
     {
         return [
-            'amount' => 'integer',
+            'amount' => MoneyCast::class,
+            'reference_id' => ReferenceIdCast::class,
         ];
     }
 

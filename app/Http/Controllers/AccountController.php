@@ -2,21 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\DepositMoneyAction;
+use App\DTOs\DepositDTO;
 use App\Exceptions\AccountNotFoundException;
-use App\Exceptions\InvalidAmountException;
 use App\Http\Requests\DepositRequest;
 use App\Http\Resources\AccountResource;
 use App\Http\Resources\TransactionResource;
 use App\Services\BalanceService;
-use App\Services\TransactionService;
 
 class AccountController extends Controller
 {
     public function __construct(
         private readonly BalanceService $balanceService,
-        private readonly TransactionService $transactionService
-    ) {}
+        private readonly DepositMoneyAction $depositMoneyAction
+    ) {
+    }
 
+    /**
+     * @throws AccountNotFoundException
+     */
     public function getBalance(string $id): AccountResource
     {
         $account = $this->balanceService->getBalance($id);
@@ -24,6 +28,9 @@ class AccountController extends Controller
         return new AccountResource($account);
     }
 
+    /**
+     * @throws AccountNotFoundException
+     */
     public function getTransactions(string $id): \Illuminate\Http\Resources\Json\AnonymousResourceCollection
     {
         $transactions = $this->balanceService->getAccountTransactions($id);
@@ -33,15 +40,11 @@ class AccountController extends Controller
 
     /**
      * @throws AccountNotFoundException
-     * @throws InvalidAmountException
      */
     public function deposit(DepositRequest $request, string $id): TransactionResource
     {
-        $transaction = $this->transactionService->deposit(
-            $id,
-            $request->validated('amount'),
-            $request->validated('reference_id')
-        );
+        $dto = DepositDTO::fromRequest($request, (int) $id);
+        $transaction = $this->depositMoneyAction->execute($dto);
 
         return new TransactionResource($transaction);
     }

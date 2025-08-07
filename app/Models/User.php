@@ -2,11 +2,23 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Casts\EmailCast;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+/**
+ * Class User
+ *
+ * Represents a user in the banking system.
+ *
+ * @property int $id
+ * @property string $name
+ * @property \App\ValueObjects\Email $email
+ * @property int $age
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ */
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
@@ -39,7 +51,9 @@ class User extends Authenticatable
      */
     protected function casts(): array
     {
-        return [];
+        return [
+            'email' => EmailCast::class,
+        ];
     }
 
     /**

@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class TransferRequest extends FormRequest
 {
@@ -41,9 +43,20 @@ class TransferRequest extends FormRequest
             'to_account_id.exists' => 'Destination account not found',
             'to_account_id.different' => 'Cannot transfer to the same account',
             'amount.required' => 'Amount is required',
-            'amount.integer' => 'Amount must be an integer (kopecks)',
+            'amount.integer' => 'Amount must be an integer (cents)',
             'amount.min' => 'Amount must be greater than zero',
             'reference_id.unique' => 'Reference ID already exists',
         ];
+    }
+
+    /**
+     * Handle a failed validation attempt.
+     */
+    protected function failedValidation(Validator $validator): void
+    {
+        throw new HttpResponseException(response()->json([
+            'message' => 'Validation errors',
+            'errors' => $validator->errors(),
+        ], 422));
     }
 }

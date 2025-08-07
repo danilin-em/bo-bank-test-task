@@ -2,9 +2,21 @@
 
 namespace App\Models;
 
+use App\Casts\MoneyCast;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class Account
+ *
+ * Represents a bank account associated with a user.
+ *
+ * @property int $id
+ * @property int $user_id
+ * @property \App\ValueObjects\Money $balance
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ */
 class Account extends Model
 {
     use HasFactory;
@@ -27,7 +39,7 @@ class Account extends Model
     protected function casts(): array
     {
         return [
-            'balance' => 'integer',
+            'balance' => MoneyCast::class,
         ];
     }
 
@@ -40,7 +52,16 @@ class Account extends Model
     }
 
     /**
-     * Get all transactions where this account is the sender.
+     * Get all transactions related to this account (incoming and outgoing).
+     */
+    public function transactions()
+    {
+        return Transaction::where('from_account_id', $this->id)
+            ->orWhere('to_account_id', $this->id);
+    }
+
+    /**
+     * Get outgoing transactions from this account.
      */
     public function outgoingTransactions()
     {
@@ -48,19 +69,10 @@ class Account extends Model
     }
 
     /**
-     * Get all transactions where this account is the receiver.
+     * Get incoming transactions to this account.
      */
     public function incomingTransactions()
     {
         return $this->hasMany(Transaction::class, 'to_account_id');
-    }
-
-    /**
-     * Get all transactions related to this account.
-     */
-    public function transactions()
-    {
-        return Transaction::where('from_account_id', $this->id)
-            ->orWhere('to_account_id', $this->id);
     }
 }

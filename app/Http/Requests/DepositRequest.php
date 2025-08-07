@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class DepositRequest extends FormRequest
 {
@@ -34,9 +36,20 @@ class DepositRequest extends FormRequest
     {
         return [
             'amount.required' => 'Amount is required',
-            'amount.integer' => 'Amount must be an integer (kopecks)',
+            'amount.integer' => 'Amount must be an integer (cents)',
             'amount.min' => 'Amount must be greater than zero',
             'reference_id.unique' => 'Reference ID already exists',
         ];
+    }
+
+    /**
+     * Handle a failed validation attempt.
+     */
+    protected function failedValidation(Validator $validator): void
+    {
+        throw new HttpResponseException(response()->json([
+            'message' => 'Validation errors',
+            'errors' => $validator->errors(),
+        ], 422));
     }
 }
