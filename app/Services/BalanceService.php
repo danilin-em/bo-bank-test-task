@@ -19,4 +19,9 @@ class BalanceService
             ->orderBy('created_at', 'desc')
             ->get();
     }
+
+    public function hasEnoughFunds(Account $account, int $amount): bool
+    {
+        return $account->balance >= $amount;
+    }
 }
