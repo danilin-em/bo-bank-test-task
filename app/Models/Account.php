@@ -61,6 +61,6 @@ class Account extends Model
     public function transactions()
     {
         return Transaction::where('from_account_id', $this->id)
-                         ->orWhere('to_account_id', $this->id);
+            ->orWhere('to_account_id', $this->id);
     }
 }

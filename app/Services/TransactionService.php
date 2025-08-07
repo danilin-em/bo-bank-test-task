@@ -23,11 +23,11 @@ class TransactionService
         }
 
         $account = Account::find($accountId);
-        if (!$account) {
+        if (! $account) {
             throw new AccountNotFoundException('Account not found');
         }
 
-        if (!$referenceId) {
+        if (! $referenceId) {
             $referenceId = (string) Str::uuid();
         }
 

@@ -14,7 +14,7 @@ class BalanceService
     public function getAccountTransactions(string $accountId): \Illuminate\Database\Eloquent\Collection
     {
         $account = Account::findOrFail($accountId);
-        
+
         return $account->transactions()
             ->orderBy('created_at', 'desc')
             ->get();

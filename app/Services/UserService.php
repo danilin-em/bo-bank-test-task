@@ -9,7 +9,7 @@ class UserService
     public function updateUser(User $user, array $data): User
     {
         $user->update($data);
-        
+
         return $user->load('account');
     }
 

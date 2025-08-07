@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\Account;
-use App\Models\User;
 use App\Models\Transaction;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -22,19 +22,19 @@ class DatabaseSeeder extends Seeder
                     'name' => 'Иван Петров',
                     'email' => 'ivan.petrov@example.com',
                     'age' => 30,
-                    'balance' => 100000  // 1000.00 в копейках
+                    'balance' => 100000,  // 1000.00 в копейках
                 ],
                 [
                     'name' => 'Мария Сидорова',
                     'email' => 'maria.sidorova@example.com',
                     'age' => 25,
-                    'balance' => 50000   // 500.00 в копейках
+                    'balance' => 50000,   // 500.00 в копейках
                 ],
                 [
                     'name' => 'Алексей Козлов',
                     'email' => 'alexey.kozlov@example.com',
                     'age' => 35,
-                    'balance' => 0       // 0.00 в копейках
+                    'balance' => 0,       // 0.00 в копейках
                 ],
             ];
 
@@ -55,7 +55,7 @@ class DatabaseSeeder extends Seeder
 
                 $accounts[] = [
                     'account' => $account,
-                    'initial_balance' => $userData['balance']
+                    'initial_balance' => $userData['balance'],
                 ];
             }
 
@@ -69,11 +69,11 @@ class DatabaseSeeder extends Seeder
                         'amount' => $accountData['initial_balance'],
                         'type' => 'deposit',
                         'status' => 'completed',
-                        'reference_id' => 'SEED_' . Str::upper(Str::random(8)),
+                        'reference_id' => 'SEED_'.Str::upper(Str::random(8)),
                     ]);
 
                     $accountData['account']->update([
-                        'balance' => $accountData['initial_balance']
+                        'balance' => $accountData['initial_balance'],
                     ]);
                 }
             }
