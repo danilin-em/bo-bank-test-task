@@ -53,19 +53,4 @@ class Transaction extends Model
         ];
     }
 
-    /**
-     * Get the account that sent this transaction.
-     */
-    public function fromAccount()
-    {
-        return $this->belongsTo(Account::class, 'from_account_id');
-    }
-
-    /**
-     * Get the account that received this transaction.
-     */
-    public function toAccount()
-    {
-        return $this->belongsTo(Account::class, 'to_account_id');
-    }
 }

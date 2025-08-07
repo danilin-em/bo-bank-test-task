@@ -59,20 +59,4 @@ class Account extends Model
         return Transaction::where('from_account_id', $this->id)
             ->orWhere('to_account_id', $this->id);
     }
-
-    /**
-     * Get outgoing transactions from this account.
-     */
-    public function outgoingTransactions()
-    {
-        return $this->hasMany(Transaction::class, 'from_account_id');
-    }
-
-    /**
-     * Get incoming transactions to this account.
-     */
-    public function incomingTransactions()
-    {
-        return $this->hasMany(Transaction::class, 'to_account_id');
-    }
 }

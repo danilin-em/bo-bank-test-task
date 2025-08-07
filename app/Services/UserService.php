@@ -33,8 +33,4 @@ readonly class UserService
         return $user->load('account');
     }
 
-    public function getAllUsers(): \Illuminate\Database\Eloquent\Collection
-    {
-        return $this->userRepository->getAll();
-    }
 }
