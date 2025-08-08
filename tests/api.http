@@ -1,0 +1,335 @@
+### ==========================================
+### Basic User Operations
+### ==========================================
+
+### Get User Info
+GET http://localhost:8000/api/users/2
+Accept: application/json
+
+###
+
+### Update User
+PUT http://localhost:8000/api/users/2
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Иван Иванович",
+  "email": "ivan.ivanov@example.com",
+  "age": 30
+}
+
+###
+
+### Get Non-existent User (should return 404)
+GET http://localhost:8000/api/users/999
+Accept: application/json
+
+###
+
+### Update User with Invalid Data (should fail validation - 422)
+PUT http://localhost:8000/api/users/2
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "",
+  "email": "invalid-email",
+  "age": -5
+}
+
+###
+
+### ==========================================
+### Account Balance Operations
+### ==========================================
+
+### Get Account Balance
+GET http://localhost:8000/api/accounts/2/balance
+Accept: application/json
+
+###
+
+### Get Account Transactions
+GET http://localhost:8000/api/accounts/2/transactions
+Accept: application/json
+
+###
+
+### Get Non-existent Account Balance (should return 404)
+GET http://localhost:8000/api/accounts/999/balance
+Accept: application/json
+
+###
+
+### ==========================================
+### Deposit Operations (with reference_id)
+### ==========================================
+
+### Deposit Money with Reference ID
+POST http://localhost:8000/api/accounts/2/deposit
+Content-Type: application/json
+Accept: application/json
+
+{
+  "amount": 5000,
+  "reference_id": "dep-001-2025-08-08"
+}
+
+###
+
+### Duplicate Deposit with Same Reference ID (should fail - idempotency check)
+POST http://localhost:8000/api/accounts/2/deposit
+Content-Type: application/json
+Accept: application/json
+
+{
+  "amount": 5000,
+  "reference_id": "dep-001-2025-08-08"
+}
+
+###
+
+### Deposit with Different Reference ID (should succeed)
+POST http://localhost:8000/api/accounts/2/deposit
+Content-Type: application/json
+Accept: application/json
+
+{
+  "amount": 2500,
+  "reference_id": "dep-002-2025-08-08"
+}
+
+###
+
+### Deposit without Reference ID (auto-generated UUID)
+POST http://localhost:8000/api/accounts/2/deposit
+Content-Type: application/json
+Accept: application/json
+
+{
+  "amount": 1000
+}
+
+###
+
+### Deposit Invalid Amount (should fail validation - 422)
+POST http://localhost:8000/api/accounts/2/deposit
+Content-Type: application/json
+Accept: application/json
+
+{
+  "amount": -50,
+  "reference_id": "dep-invalid-001"
+}
+
+###
+
+### Deposit Zero Amount (should fail validation - 422)
+POST http://localhost:8000/api/accounts/2/deposit
+Content-Type: application/json
+Accept: application/json
+
+{
+  "amount": 0,
+  "reference_id": "dep-zero-001"
+}
+
+###
+
+### Deposit to Non-existent Account (should return 404)
+POST http://localhost:8000/api/accounts/999/deposit
+Content-Type: application/json
+Accept: application/json
+
+{
+  "amount": 1000,
+  "reference_id": "dep-nonexistent-001"
+}
+
+###
+
+### ==========================================
+### Transfer Operations (with reference_id)
+### ==========================================
+
+### Transfer Money with Reference ID
+POST http://localhost:8000/api/transfers
+Content-Type: application/json
+Accept: application/json
+
+{
+  "from_account_id": 2,
+  "to_account_id": 3,
+  "amount": 2500,
+  "reference_id": "transfer-001-2025-08-07"
+}
+
+###
+
+### Duplicate Transfer with Same Reference ID (should fail - idempotency)
+POST http://localhost:8000/api/transfers
+Content-Type: application/json
+Accept: application/json
+
+{
+  "from_account_id": 2,
+  "to_account_id": 3,
+  "amount": 2500,
+  "reference_id": "transfer-001-2025-08-07"
+}
+
+###
+
+### Transfer with Different Reference ID (should succeed)
+POST http://localhost:8000/api/transfers
+Content-Type: application/json
+Accept: application/json
+
+{
+  "from_account_id": 2,
+  "to_account_id": 3,
+  "amount": 1000,
+  "reference_id": "transfer-002-2025-08-07"
+}
+
+###
+
+### Transfer without Reference ID (auto-generated UUID)
+POST http://localhost:8000/api/transfers
+Content-Type: application/json
+Accept: application/json
+
+{
+  "from_account_id": 2,
+  "to_account_id": 3,
+  "amount": 500
+}
+
+###
+
+### Transfer to Same Account (should fail validation - 422)
+POST http://localhost:8000/api/transfers
+Content-Type: application/json
+Accept: application/json
+
+{
+  "from_account_id": 2,
+  "to_account_id": 2,
+  "amount": 1000,
+  "reference_id": "transfer-same-001"
+}
+
+###
+
+### Transfer with Insufficient Funds (should fail - 400)
+POST http://localhost:8000/api/transfers
+Content-Type: application/json
+Accept: application/json
+
+{
+  "from_account_id": 2,
+  "to_account_id": 3,
+  "amount": 999999999,
+  "reference_id": "transfer-insufficient-001"
+}
+
+###
+
+### Transfer from Non-existent Account (should return 404)
+POST http://localhost:8000/api/transfers
+Content-Type: application/json
+Accept: application/json
+
+{
+  "from_account_id": 999,
+  "to_account_id": 3,
+  "amount": 1000,
+  "reference_id": "transfer-nonexistent-from"
+}
+
+###
+
+### Transfer to Non-existent Account (should return 404)
+POST http://localhost:8000/api/transfers
+Content-Type: application/json
+Accept: application/json
+
+{
+  "from_account_id": 2,
+  "to_account_id": 999,
+  "amount": 1000,
+  "reference_id": "transfer-nonexistent-to"
+}
+
+###
+
+### Transfer Negative Amount (should fail validation - 422)
+POST http://localhost:8000/api/transfers
+Content-Type: application/json
+Accept: application/json
+
+{
+  "from_account_id": 2,
+  "to_account_id": 3,
+  "amount": -1000,
+  "reference_id": "transfer-negative-001"
+}
+
+###
+
+### Transfer Zero Amount (should fail validation - 422)
+POST http://localhost:8000/api/transfers
+Content-Type: application/json
+Accept: application/json
+
+{
+  "from_account_id": 2,
+  "to_account_id": 3,
+  "amount": 0,
+  "reference_id": "transfer-zero-001"
+}
+
+###
+
+### ==========================================
+### Concurrent Operations Testing
+### ==========================================
+
+### Concurrent Transfer 1 (run simultaneously with Transfer 2)
+POST http://localhost:8000/api/transfers
+Content-Type: application/json
+Accept: application/json
+
+{
+  "from_account_id": 2,
+  "to_account_id": 4,
+  "amount": 100,
+  "reference_id": "concurrent-001"
+}
+
+###
+
+### Concurrent Transfer 2 (run simultaneously with Transfer 1)
+POST http://localhost:8000/api/transfers
+Content-Type: application/json
+Accept: application/json
+
+{
+  "from_account_id": 2,
+  "to_account_id": 3,
+  "amount": 100,
+  "reference_id": "concurrent-002"
+}
+
+###
+
+### ==========================================
+### Health Checks
+### ==========================================
+
+### Health Check
+GET http://localhost:8000/api/health
+Accept: application/json
+
+###
